@@ -4,34 +4,48 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Constants from 'expo-constants'
 
 let trackPlayed = []
-const Profile = ({navigation}) => {
 
-  
+
+const Profile = ({navigation, route}) => {
+  let {trackPlaying, tracksPlayed} = route.params
+  if(trackPlaying!="")
+  trackPlaying =  JSON.parse(trackPlaying)
+  //trackPlayed = JSON.parse(tracksPlayed) 
+
   const getData = async() => {
     let collect
+
     let read = await AsyncStorage.getItem("played").then(
       (values) => {
         collect= values;
         console.log('Then: ',values);
         trackPlayed = JSON.parse(collect)
+        
+
       })
-    console.log("final", read) 
+    //console.log("final", read) 
     return collect
   }
 
   let dataString = getData()
-  console.log("Data:", trackPlayed)
-  console.log("type:", typeof trackPlayed)
+  
 
   return (
     <View style={styles.container}>
       
       <View style={styles.barContainer} > 
-          <Button style={styles.button} color="#162238" title = "<" onPress={() => {navigation.navigate('Playing')}}/>
+          <Button style={styles.button} color="#162238" title = "<" onPress={() => {navigation.navigate('Playing',{
+                    trackPlaying: `${JSON.stringify(trackPlaying)}`, 
+                    tracksPlayed: `${JSON.stringify(tracksPlayed)}`, 
+                    })
+            }}/>
           <View>
             <Text style={styles.bartitle1}> Profile page </Text>
           </View>
-          <Button style={styles.button} color="#162238" title = "\/" onPress={() => {navigation.navigate('Top10')}}/>  
+          <Button style={styles.button} color="#162238" title = "\/" onPress={() => {navigation.navigate('Top10',{
+                    trackPlaying: `${JSON.stringify(trackPlaying)}`, 
+                    tracksPlayed: `${JSON.stringify(trackPlayed)}`, 
+                    })}}/>  
 
       </View>
 
@@ -48,7 +62,7 @@ const Profile = ({navigation}) => {
                 <Image
                 style={styles.cover}
                 source={{
-                  uri: 'https://reactnative.dev/img/tiny_logo.png'
+                  uri: `${track.img}`
                 }}
                 />
                 <View style={styles.info}> 
@@ -167,4 +181,4 @@ const styles = StyleSheet.create({
   },
   
 });
-export default Profile;
+export default React.memo(Profile);

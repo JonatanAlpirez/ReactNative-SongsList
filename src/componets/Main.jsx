@@ -8,12 +8,16 @@ let trackPlayed = []
 let tracksData = []
 
 function filtrar (data){
+  const imgs = ["https://www.efeeme.com/wp-content/uploads/2023/02/radiohead_pablo_honey_08_02.jpg",
+  "https://cdn.zendalibros.com/wp-content/uploads/seven-nation-army.jpg","https://upload.wikimedia.org/wikipedia/en/5/52/Franz_Ferdinand_-_Take_Me_Out.jpg", "https://i.scdn.co/image/ab67616d0000b273ccdddd46119a4ff53eaf1f5d","https://www.udiscovermusic.com/wp-content/uploads/2019/04/Tame-Impala-Currents-album-cover-web-optimised-820-820x820.jpg", "https://i.pinimg.com/originals/34/c2/f3/34c2f3cb3e5da49341abdd0642933ce3.jpg","https://vectorseek.com/wp-content/uploads/2023/06/The-Strokes-Logo-Vector.jpg", "https://indierocks.sfo3.digitaloceanspaces.com/wp-content/uploads/2022/08/gorillaz_2022_7.jpg", "https://i.scdn.co/image/ab67706c0000da84d5fd5599e729f985933d89a5", "https://upload.wikimedia.org/wikipedia/en/3/37/KarmaPolice.jpg"
+  ]
+  const datafilter = data.map((track,i) => {
 
-  const datafilter = data.map(track => {
     return {
       "name" : track.name, 
       "listeners": track.listeners,
       "artist" : track.artist.name,
+      "img": `${imgs[i]}`
     }
   })
   /* console.log(JSON.stringify(datafilter)) */
@@ -28,24 +32,27 @@ async function fetchData(){
   } catch (error) {
     console.log(`Error: ${error.message}`)
   }
-  console.log(data)
+  //console.log("Data fetched:", JSON.stringify(data))
+  data= data.tracks.track.slice(0,10)
+  //console.log("Data fetched top 10:", JSON.stringify(data))
+  data = filtrar(data)
+  //console.log("Data fetched filtered:", JSON.stringify(data))
+  tracksData =  data
+  //console.log("Data tracks:", JSON.stringify(tracksData))
+  
   return data;
 }
 
-async function storedata (data){
-    try {
-      await AsyncStorage.setItem('data', JSON.stringify(data));
-      console.log("data stored")
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const Top10 = ({navigation,route}) => { 
+  //let {trackPlaying, tracksPlayed} = route.params
+  
 
-const Top10 = ({navigation}) => {
-  // const data = fetchData()
+  //const data = fetchData()
+  
+
   const provisional = dataProvicional.tracks.track.slice(0,10) // Quitar
   const filtro = filtrar(provisional)
-  tracksData =  filtro
+  tracksData =  filtro 
   /* console.log("loaded") */
 
   const addTrack = async (item) => {
@@ -62,7 +69,11 @@ const Top10 = ({navigation}) => {
             <Text style={styles.title1}> Playing from </Text>
             <Text style={styles.title2}> Mx,  Top tracks this Week </Text>
           </View>
-          <Button style={styles.button} color="#162238" title = "..." onPress={() => {navigation.navigate('Profile')}}/>  
+          <Button style={styles.button} color="#162238" title = "..." onPress={() => {navigation.navigate('Profile',{
+                    trackPlaying: "", 
+                    tracksPlayed: `${JSON.stringify(trackPlayed)}`, 
+                    })
+                }}/>  
 
       </View>
       
@@ -70,20 +81,24 @@ const Top10 = ({navigation}) => {
 
           {
             tracksData.map( (track, index) => (
+      
               <View key={index} style={styles.card}>
+
               <Image
               style={styles.cover}
-              source={{
-                uri: 'https://reactnative.dev/img/tiny_logo.png'
-              }}
+              source={{uri: `${track.img}` }}
               />
               <View style={styles.info}> 
-                <Text style={styles.position} > #{index +1}    |    {track.listeners} listeners</Text>
+                <Text style={styles.position} > # {index +1}    |    {track.listeners} listeners</Text>
                 <Text style={styles.title} > {track.name}</Text>
                 <View style={styles.bottomcard}> 
                   <Text style={styles.artist} > {track.artist}</Text>
                   <Button style={styles.button} title = "▶" onPress={() => {addTrack(track)
-                  navigation.navigate('Playing')}}/> 
+                  navigation.navigate('Playing',{
+                    trackPlaying: `${JSON.stringify(track)}`, 
+                    tracksPlayed: `${JSON.stringify(trackPlayed)}`, 
+                    })
+                  }}/> 
                 </View> 
               </View>
               
