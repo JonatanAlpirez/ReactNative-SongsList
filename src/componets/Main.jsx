@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Image, StyleSheet, Text, View, Button, Alert, ViewComponent} from 'react-native';
+import {TouchableHighlight, ImageBackground, ScrollView, Image, StyleSheet, Text, View, Button, Alert, ViewComponent} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import dataProvicional from '../componets/dataprovisional'
 import Constants from 'expo-constants'
@@ -83,22 +83,23 @@ const Top10 = ({navigation,route}) => {
             tracksData.map( (track, index) => (
       
               <View key={index} style={styles.card}>
-
-              <Image
-              style={styles.cover}
-              source={{uri: `${track.img}` }}
-              />
-              <View style={styles.info}> 
-                <Text style={styles.position} > # {index +1}    |    {track.listeners} listeners</Text>
-                <Text style={styles.title} > {track.name}</Text>
-                <View style={styles.bottomcard}> 
-                  <Text style={styles.artist} > {track.artist}</Text>
-                  <Button style={styles.button} title = "▶" onPress={() => {addTrack(track)
+              <TouchableHighlight onPress={() => {addTrack(track)
                   navigation.navigate('Playing',{
                     trackPlaying: `${JSON.stringify(track)}`, 
                     tracksPlayed: `${JSON.stringify(trackPlayed)}`, 
                     })
-                  }}/> 
+                  }}>
+              <Image
+              style={styles.cover}
+              source={{uri: `${track.img}` }}
+              />
+              </TouchableHighlight>
+              <View style={styles.info}> 
+                <Text style={styles.position} > # {index +1}    |    {track.listeners} listeners                               ● ● ●</Text>
+                <Text style={styles.title} > {track.name}</Text>
+                <View style={styles.bottomcard}> 
+                  <Text style={styles.artist} > {track.artist}</Text>
+                   
                 </View> 
               </View>
               
@@ -108,6 +109,42 @@ const Top10 = ({navigation,route}) => {
           }
         
       </ScrollView>
+
+      <View style={styles.miniPlayer} >
+
+      <ImageBackground source={require('../../assets/fondo.png')} resizeMode="cover" style={styles.image}>
+        
+      <View style={styles.player}>
+              <Image
+               style={styles.coverTrack}
+               source={{
+                uri: `${tracksData[3].img}`
+               }}
+              />
+              <Text style={styles.titleplayer} >{tracksData[3].name}</Text>
+              <View style={styles.playerbuttons} >
+              <Text style={styles.nextback} >◀◀</Text>
+              <View style={styles.pause} >
+                <Text style={styles.pausetext} >||</Text>
+              </View>
+              <Text style={styles.nextback} >▶▶</Text>
+              </View>
+      </View>
+
+      <View style={{flexDirection: 'row', alignItems: 'center', marginTop:5,}}>
+        <View style={{flex: 1, height: 1, backgroundColor: 'gray', marginLeft: 20}} />
+        <View>
+          <Text style={{width: 5, textAlign: 'right'}}>●</Text>
+        </View>
+        <View style={{flex: 1, height: 1, backgroundColor: 'gray', marginRight: 20,}} />
+      </View>
+
+      {/* <Text style={styles.playerline} > ———————●—————————————————— </Text> */}
+
+      </ImageBackground>
+
+
+      </View>
     </View>
     
   ) 
@@ -120,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#162238',
   },
   list:{
-    height: '93%',
+    height: '75%',
     
   },
   card: {
@@ -188,7 +225,85 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-  
+  miniPlayer:{
+    backgroundColor: 'white',
+    borderTopLeftRadius: 55,
+    borderTopRightRadius: 55,
+    height:120,
+    overflow: 'hidden',
+  },
+  image:{ 
+    display: 'flex',
+    flexDirection: 'column',
+    height:'100%', 
+
+  },
+
+  player:{
+    marginTop:20,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems:'center',
+    
+  },
+  coverTrack:{
+    marginLeft: 25,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  titleplayer: {
+    fontWeight: 'bold',
+    marginLeft: 40,
+    width: 150,
+    textAlign: 'left',
+    color: 'gray',
+    fontSize: 15,
+  },
+  playerbuttons:{
+    
+    marginTop: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 10,
+    
+
+  },
+  nextback:{
+    fontWeight: 'bold',
+    fontSize: 12,
+    color: '#162238',
+    textAlign: 'center',
+    marginHorizontal: 10,
+    color: 'gray',
+    marginTop:5,
+  },
+  pause:{
+    fontWeight: 'bold',
+    color: 'gray',
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    color: '#162238',
+    textAlign: 'center',
+    borderRadius: 50,
+    width: 30,
+    height: 30,
+  },
+  pausetext:{
+    fontWeight: '900',
+    color: 'gray',
+    fontSize:20,
+    color: '#162238',
+    textAlign: 'center',
+  },
+  playerline:{
+    marginTop:10,
+    color: 'gray',
+    fontSize: 12,
+    textAlign:'center',
+    fontWeight: 'bold',
+  },
 });
 
 export default Top10;

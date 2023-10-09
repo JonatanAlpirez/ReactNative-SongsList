@@ -12,6 +12,12 @@ const Profile = ({navigation, route}) => {
   trackPlaying =  JSON.parse(trackPlaying)
   //trackPlayed = JSON.parse(tracksPlayed) 
 
+  const addTrack = async (item) => {
+    trackPlayed.push(item)
+    await AsyncStorage.setItem("playing", JSON.stringify(item))
+    await AsyncStorage.setItem("played", JSON.stringify(trackPlayed))
+  }
+
   const getData = async() => {
     let collect
 
@@ -34,7 +40,7 @@ const Profile = ({navigation, route}) => {
     <View style={styles.container}>
       
       <View style={styles.barContainer} > 
-          <Button style={styles.button} color="#162238" title = "<" onPress={() => {navigation.navigate('Playing',{
+          <Button style={styles.button} color="#162238" title = "<" onPress={() => {navigation.navigate('Top10',{
                     trackPlaying: `${JSON.stringify(trackPlaying)}`, 
                     tracksPlayed: `${JSON.stringify(tracksPlayed)}`, 
                     })
@@ -70,7 +76,14 @@ const Profile = ({navigation, route}) => {
                   <Text style={styles.title} > {track.name}</Text>
                   <View style={styles.bottomcard}> 
                     <Text style={styles.artist} > {track.artist}</Text>
+                    <Button style={styles.button} title = "▶" onPress={() => {addTrack(track)
+                  navigation.navigate('Playing',{
+                    trackPlaying: `${JSON.stringify(track)}`, 
+                    tracksPlayed: `${JSON.stringify(trackPlayed)}`, 
+                    })
+                  }}/>
                   </View> 
+
                 </View>
                 
                 </View>
